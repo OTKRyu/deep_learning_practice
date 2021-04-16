@@ -27,7 +27,7 @@ def __train(lr, weight_decay, epocs=50):
                             output_size=10, weight_decay_lambda=weight_decay, use_dropout=True, use_batchnorm=True)
     trainer = Trainer(network, x_train, t_train, x_val, t_val,
                       epochs=epocs, mini_batch_size=100,
-                      optimizer='sgd', optimizer_param={'lr': lr}, verbose=False)
+                      optimizer='sgd', optimizer_param={'lr': lr}, verbose=True)
     trainer.train()
 
     return trainer.test_acc_list, trainer.train_acc_list
@@ -36,36 +36,23 @@ def __train(lr, weight_decay, epocs=50):
 # 하이퍼파라미터 무작위 탐색======================================
 optimization_trial = 100
 sys.stdin = open('find_data.txt', 'r')
-l_lr, s_lr = map(int, input().split())
-if l_lr - s_lr <= 0.01:
-    lr_flag = 0
-else:
-    lr_flag = 1
-l_wd, s_wd = map(int, input().split())
-if l_wd-s_wd <= 0.01:
-    wd_flag = 0
-else:
-    wd_flag = 1
+l_lr, s_lr = map(float, input().split())
+l_wd, s_wd = map(float, input().split())
 best_acc = 0
-if lr_flag or wd_flag:
-    for i in range(optimization_trial):
-        # 탐색한 하이퍼파라미터의 범위 지정===============
-        weight_decay = np.random.uniform(s_wd, l_lr)
-        lr = np.random.uniform(s_lr, l_lr)
-        # ================================================
-        val_acc_list, train_acc_list = __train(lr, weight_decay)
-        if best_acc < val_acc_list[-1]:
-            best_acc = val_acc_list[-1]
-            best_lr = lr
-            best_wd = weight_decay
-    if ((l_lr-s_lr)/10)) <= 0.005 and (l_wd-s_wd)/10) <= 0.005:
-        sys.stdout = open('final_data.txt', 'w')
-        print(2)
-        print(f'{best_lr}')
-        print(f'{best_wd}')
-    else:
-        sys.stdout = open('find_data.txt', 'w')
-        print(f'{max(0.00000000000001,best_lr-((l_lr-s_lr)/10))} {best_lr+((l_lr-s_lr)/10)}')
-        print(f'{max(0.00000000000001,best_wd-((l_wd-s_wd)/10))} {best_wd+((l_wd-s_wd)/10)}')
-else:
-    print('hyper parameters are already good enough')
+
+for i in range(optimization_trial):
+    # 탐색한 하이퍼파라미터의 범위 지정===============
+    weight_decay = 10**np.random.uniform(s_wd, l_wd)
+    lr = 10**np.random.uniform(s_lr, l_lr)
+    # ================================================
+    val_acc_list, train_acc_list = __train(lr, weight_decay)
+    if best_acc < val_acc_list[-1]:
+        best_acc = val_acc_list[-1]
+        best_lr = lr
+        best_wd = weight_decay
+sys.stdout = open('train_data.txt', 'w')
+print(2)
+print(f'{best_lr}')
+print(f'{best_wd}')
+
+
