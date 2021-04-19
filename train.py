@@ -15,15 +15,14 @@ def __train(lr, weight_decay, epocs=50):
                       epochs=epocs, mini_batch_size=100,
                       optimizer='sgd', optimizer_param={'lr': lr}, verbose=True)
     trainer.train()
-    sys.stdout = open('final_data.txt','w')
-    print(lr)
-    print(weight_decay)
-    print(network.params['W1'])
-    print(network.params['b1'])
-    print(network.params['W2'])
-    print(network.params['b2'])
-    print(network.params['W3'])
-    print(network.params['b3'])
+    
+    W1 = network.params['W1']
+    b1 = network.params['b1']
+    W2 = network.params['W2']
+    b2 = network.params['b2']
+    W3 = network.params['W3']
+    b3 = network.params['b3']
+    np.savez('final_data.npz',W1=W1,b1=b1,W2=W2,b2=b2,W3=W3,b3=b3)
     return trainer.test_acc_list
 
 sys.stdin = open('train_data.txt', 'r')
@@ -36,6 +35,5 @@ else:
     # ================================================
     final_acc = __train(lr, weight_decay)
     print("final acc:" + str(final_acc[-1]) + " | lr:" + str(lr) + ", weight decay:" + str(weight_decay))
-    plt.plot(fianl_acc)
-    plt.show() 
-    
+    plt.plot(final_acc)
+    plt.show()

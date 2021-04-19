@@ -47,4 +47,11 @@ run find.py and get hyper parameters
 
 run train.py and get weights matrix and bias
 
+#### 0419
+change train.py because of saving weights matrix and bias
+run train.py and get result
+complete final.py 
 ## reuslt
+maybe just two layers are too few to get better result.
+
+total fail. i don't know whether make this better or go to another object
